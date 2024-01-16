@@ -6,6 +6,26 @@ const RegisterScreen: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  const handleRegister = async () => {
+
+    try {
+        const response = await fetch('http://172.16.100.245:8888/users/register', {
+          method: 'POST',
+          headers: {
+            Accept: "application/json",
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ name, email, password }),
+        });
+  
+        const responseData = await response.json();
+  
+        return response.body
+
+      } catch (error) {
+        console.error('Error al registrar usuario:', error);
+      }
+    };
 
 
   return (
@@ -36,7 +56,7 @@ const RegisterScreen: React.FC = () => {
         secureTextEntry
       />
 
-      <Button title="Registrar" />
+      <Button title="Registrar" onPress={handleRegister} />
     </View>
   );
 };
