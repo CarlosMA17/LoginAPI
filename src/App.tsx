@@ -1,16 +1,13 @@
-import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
-import Header from './Header';
-import RegisterScreen from './screens/RegisterScreen';
+import DrawerNavigation from './Navigation/DrawerNavigation';
 
-export default function App() {
+
+const App: React.FC = () => {  
+
   return (
-    <>
-      <Header title={'App practica'}></Header>
-      <View style={styles.container}>
-        <RegisterScreen />
-      </View>
-    </>
+  <>
+      <DrawerNavigation />
+  </ >
   );
 }
 
@@ -22,3 +19,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
+
+export default App;
