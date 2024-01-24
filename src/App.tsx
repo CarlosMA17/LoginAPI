@@ -1,13 +1,14 @@
 import { StyleSheet, Text, View } from 'react-native';
 import DrawerNavigation from './Navigation/DrawerNavigation';
+import { LogedProvider } from './context/UserContext';
 
 
 const App: React.FC = () => {  
 
   return (
-  <>
+    <LogedProvider>
       <DrawerNavigation />
-  </ >
+  </LogedProvider >
   );
 }
 

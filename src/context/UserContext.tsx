@@ -1,35 +1,24 @@
-import { Context, Dispatch, ReactNode, createContext, useContext, useState, SetStateAction  } from 'react'
+import React, { ReactNode, createContext, useContext, useState } from 'react';
 
-export type UserData = {
-    name: string;
-    email: string;
+
+interface LogedContextProps {
+  loged: boolean;
+  setLoged: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export type UserContextType = {
-    user: UserData | null;
-    setUserData: Dispatch<SetStateAction<UserData | null>>;
-}
 
-interface UserProviderProps {
-    children: ReactNode;
-  }
+const LogedContext = createContext<LogedContextProps>({} as LogedContextProps);
 
-export const UserContext = createContext<UserContextType | null>({} as UserContextType);
 
-export const UserContextProvider: React.FC<UserProviderProps> = ({ children }) => {
-    const [user, setUserData] = useState<UserData | null>(null);
+const LogedProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const [loged, setLoged] = useState<boolean>(false);
 
-    return (
-        <UserContext.Provider value={{user, setUserData}} >
-            {children}
-        </UserContext.Provider>
-    )
-}
+  return (
+    <LogedContext.Provider value={{ loged, setLoged }}>
+      {children}
+    </LogedContext.Provider>
+  );
+};
 
-export const useUserAuth = () => {
-    const context = useContext(UserContext);
-    if (!context) {
-      throw new Error('useUserAuth must be used within a UserProvider');
-    }
-    return context;
-  };
+export { LogedProvider };
+export default LogedContext;

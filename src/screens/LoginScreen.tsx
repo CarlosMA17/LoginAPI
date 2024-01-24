@@ -1,36 +1,39 @@
 import { Link } from '@react-navigation/native';
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
-import RegisterScreen from './RegisterScreen';
+import LogedContext from '../context/UserContext';
 
-interface UserData {
-  name: string;
-  email: string;
-  password: string;
+interface LoginScreenProps {
+  navigation: any; 
 }
 
-const LoginScreen: React.FC<UseContext> = ({ navigation }) => {
+const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
+  const  { loged, setLoged } = useContext(LogedContext);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleLogin = async () => {
+    try {
+      const response = await fetch('http://172.16.100.103:8888/users/login', {
+            method: 'POST',
+            headers: {
+              Accept: "application/json",
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ name, email, password }),
+          });
 
-    const response = await fetch('http://192.168.1.43:8888/users/login', {
-          method: 'POST',
-          headers: {
-            Accept: "application/json",
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ name, email, password }),
-        });
-
-    if(response.ok) {
+      if(response.ok) {
+        setLoged(true)
         navigation.navigate('HomeScreen')
         console.log("coorecto, bienvenido")
 
-    } else {
-      console.log("el usuario no es correcto, puede registrarse si no lo ha hecho")
+      } else {
+        console.log("el usuario no es correcto, puede registrarse si no lo ha hecho")
+      }
+    } catch (error) {
+      console.error('Error al iniciar sesión:', error);
     }
   };
 
@@ -52,7 +55,7 @@ const LoginScreen: React.FC<UseContext> = ({ navigation }) => {
         keyboardType="email-address"
       />
 
-      <Text style={styles.label}>ingresa su contraseña:</Text>
+      <Text style={styles.label}>ingresa su contraseña:  {loged ? <Text>hoola</Text> : <Text>fdfd</Text>}</Text>
       <TextInput
         style={styles.input}
         value={password}

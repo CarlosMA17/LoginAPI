@@ -1,29 +1,15 @@
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
-import { createContext, useContext, useState } from 'react';
+import {  useContext, useState } from 'react';
 import { UserRegisterResponse } from '../../types/UserRegisterResponse';
-import { useUserAuth } from '../context/UserContext'
 import { DrawerNavigationProp } from '@react-navigation/drawer';
-
-
-interface User {
-  name: string;
-  email: string;
-  password: string;
-}
-const userNull: User = {
-  name: '',
-  email: '',
-  password: ''
-}
+import LogedContext from '../context/UserContext';
 
 interface RegisterProps {
   navigation: DrawerNavigationProp<any>;
 }
 const RegisterScreen: React.FC<RegisterProps> = ({ navigation }) => {
 
-  const { setUserData } = useUserAuth();
-
-  const [user, setUser] = useState(userNull)
+  const  { setLoged } = useContext(LogedContext);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -32,7 +18,7 @@ const RegisterScreen: React.FC<RegisterProps> = ({ navigation }) => {
   const handleRegister = async () => {
 
     try {
-        const response = await fetch('http://192.168.1.43:8888/users/register', {
+        const response = await fetch('http://172.16.100.103:8888/users/register', {
           method: 'POST',
           headers: {
             Accept: "application/json",
@@ -40,23 +26,17 @@ const RegisterScreen: React.FC<RegisterProps> = ({ navigation }) => {
           },
           body: JSON.stringify({ name, email, password }),
         });
-
         
         if (response.status == 201) {
           const responseData: UserRegisterResponse = await response.json();
           console.log(responseData)
-          
+          setLoged(true)
+
           navigation.navigate('HomeScreen')
 
-
-          // Guardo mi usuario en el contexto
-          setUserData(responseData)
-
-          
-          console.log(useUserAuth)
+  
           return responseData
 
-          // Navego a la página de bienvenida
 
         } else if (response.status == 400) {
           const errorResponse = await response.json();
