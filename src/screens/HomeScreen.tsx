@@ -2,11 +2,12 @@ import { Audio } from 'expo-av';
 import { SoundObject } from 'expo-av/build/Audio';
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Button } from 'react-native';
+import { FlatList } from 'react-native-gesture-handler';
 
 const HomeScreen: React.FC = () => {
-  const [recording, setRecording] = useState<Audio.Recording | null>(null);
-  const [ audios, setAudios] = useState<Audio.Recording[]>([])
-  const [isRecording, setIsRecording] = useState(false);
+  const [ recording, setRecording ] = useState<Audio.Recording | null>(null);
+  const [ recordings, setRecordings ] = useState<Audio.Recording[]>([])
+  const [ isRecording, setIsRecording ] = useState(false);
 
   useEffect(() => {
     Audio.requestPermissionsAsync();
@@ -15,18 +16,13 @@ const HomeScreen: React.FC = () => {
   const startRecording = async () => {
     try {
       const recordingObject = new Audio.Recording();
-
-      
       await recordingObject.prepareToRecordAsync();
+      const status = await recordingObject.getStatusAsync()
 
-      
-      const status = await recordingObject.getStatusAsync();
       if (status.canRecord) {
-        // Iniciar grabación
         await recordingObject.startAsync();
-        setRecording(recordingObject);
 
-        setAudios([...audios, recordingObject])
+        setRecording(recordingObject);
         setIsRecording(true);
       } else {
         console.error('El objeto de grabación no está preparado para grabar.');
@@ -39,23 +35,31 @@ const HomeScreen: React.FC = () => {
   const stopRecording = async () => {
     if (recording) {
       try {
-        await recording.stopAndUnloadAsync();
+        setRecordings([...recordings, recording])
+        await recording.stopAndUnloadAsync()
         setIsRecording(false);
         //setRecording(null);
       } catch (error) {
-        console.error('Error al detener la grabación:', error);
+        console.error('Error al detener la grabación:', error)
       }
     }
   };
 
-  const playRecording = async () => {
-    console.log("kdldgf")
-    if (recording) {
-      console.log("first")
-      const { sound }: SoundObject = await recording.createNewLoadedSoundAsync();
-      await sound.playAsync();
+  const playRecording = async (audio: Audio.Recording) => {
+    try {
+      const { sound } = await audio.createNewLoadedSoundAsync()
+      await sound.playAsync()
+    } catch (error) {
+      console.error('Error al reproducir la grabación:', error)
     }
   };
+
+  const renderRecording = ({ item, index }: { item: Audio.Recording, index: number }) => (
+    <View>
+      <Text>Audio{index +1}:</Text>
+      <Button title="Reproducir" onPress={() => playRecording(item)} />
+    </View>
+  );
 
     return (
         <View style={styles.container}>
@@ -66,9 +70,11 @@ const HomeScreen: React.FC = () => {
               title={isRecording ? 'Detener Grabación' : 'Comenzar Grabación'}
               onPress={isRecording ? stopRecording : startRecording}
             />
-            <Text>tiene {audios.length} audios grabados</Text>
-            <Button title="Reproducir Grabación" onPress={playRecording} />
+            <Text>tiene {recordings.length} audios grabados</Text>
           </View>
+          <FlatList data={recordings} renderItem={renderRecording}>
+            
+          </FlatList>
         </View>
       );
     };
@@ -85,6 +91,7 @@ const HomeScreen: React.FC = () => {
         backgroundColor: 'lightblue', 
       },
       welcomeContainer: {
+        marginTop: 20,
         padding: 20,
         borderRadius: 10,
         backgroundColor: 'rgba(255, 255, 255, 0.8)', 

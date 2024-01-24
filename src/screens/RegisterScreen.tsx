@@ -18,7 +18,7 @@ const RegisterScreen: React.FC<RegisterProps> = ({ navigation }) => {
   const handleRegister = async () => {
 
     try {
-        const response = await fetch('http://172.16.100.103:8888/users/register', {
+        const response = await fetch('http://192.168.1.43:8888/users/register', {
           method: 'POST',
           headers: {
             Accept: "application/json",

@@ -15,7 +15,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
 
   const handleLogin = async () => {
     try {
-      const response = await fetch('http://172.16.100.103:8888/users/login', {
+      const response = await fetch('http://192.168.1.43:8888/users/login', {
             method: 'POST',
             headers: {
               Accept: "application/json",
@@ -55,7 +55,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
         keyboardType="email-address"
       />
 
-      <Text style={styles.label}>ingresa su contraseña:  {loged ? <Text>hoola</Text> : <Text>fdfd</Text>}</Text>
+      <Text style={styles.label}>ingresa su contraseña: </Text>
       <TextInput
         style={styles.input}
         value={password}

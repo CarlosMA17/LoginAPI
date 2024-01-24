@@ -6,7 +6,6 @@ import RegisterScreen from '../screens/RegisterScreen';
 import LoginScreen from '../screens/LoginScreen';
 import { LogedProvider } from '../context/UserContext';
 import LogedContext from '../context/UserContext';
-import NullScreen from '../screens/NullScreen';
 
 const Drawer = createDrawerNavigator();
 
