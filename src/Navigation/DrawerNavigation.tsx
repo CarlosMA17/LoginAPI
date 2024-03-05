@@ -4,23 +4,30 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import HomeScreen from '../screens/HomeScreen';
 import RegisterScreen from '../screens/RegisterScreen';
 import LoginScreen from '../screens/LoginScreen';
-import { LogedProvider } from '../context/UserContext';
 import LogedContext from '../context/UserContext';
+import AudioApp from '../screens/AudioApp';
 
+//se crea el drawer para poder usarlo
 const Drawer = createDrawerNavigator();
 
 
 const DrawerNavigation: React.FC = () => {
+  
+  //contexto para la variable que determina si esta logeado o no
   const  { loged } = useContext(LogedContext);
 
   return (
           <NavigationContainer>
-            <Drawer.Navigator initialRouteName="RegisterScreen">
+            <Drawer.Navigator initialRouteName="Register">
               {loged ?
-                <Drawer.Screen name="HomeScreen" component={HomeScreen} />:
                 <>
-                  <Drawer.Screen name='LoginScreen' component={LoginScreen} />
-                  <Drawer.Screen name='RegisterScreen' component={RegisterScreen} />
+                  <Drawer.Screen name="Home" component={HomeScreen} />
+                  <Drawer.Screen name="Audio" component={AudioApp} />
+                </>:
+
+                <>
+                  <Drawer.Screen name='Login' component={LoginScreen} />
+                  <Drawer.Screen name='Register' component={RegisterScreen} />
                 </>
               }
             </Drawer.Navigator>

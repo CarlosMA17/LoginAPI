@@ -3,11 +3,18 @@ import React, { useState, useContext } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import LogedContext from '../context/UserContext';
 
+// interfaz necesaria para pasar los props al componente y dentro tiene 
+//el prop de navigation para poder manejarlo
 interface LoginScreenProps {
   navigation: any; 
 }
 
+
+// componente login
 const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
+
+  // se instancian los states para las credenciales y el contexto con el booleano que determina
+  //el estado del login
   const  { loged, setLoged } = useContext(LogedContext);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -15,6 +22,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
 
   const handleLogin = async () => {
     try {
+      // fetch que manda las credenciales a la api y guarda su respuesta
       const response = await fetch('http://192.168.1.43:8888/users/login', {
             method: 'POST',
             headers: {
@@ -24,9 +32,11 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
             body: JSON.stringify({ name, email, password }),
           });
 
+
+          //segun la respuesta de la api se logea y se navega al componente home o se maneja el error
       if(response.ok) {
         setLoged(true)
-        navigation.navigate('HomeScreen')
+        navigation.navigate('Home')
         console.log("coorecto, bienvenido")
 
       } else {
@@ -64,7 +74,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
         secureTextEntry
       />
       <Button title="Iniciar Sesión" onPress={handleLogin} />
-      <Link style={styles.Link} to='/RegisterScreen' >click para registrarse por primera vez </Link>
+      <Link style={styles.Link} to='/Register' >click para registrarse por primera vez </Link>
     </View>
   );
 };

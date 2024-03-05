@@ -2,7 +2,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import DrawerNavigation from './Navigation/DrawerNavigation';
 import { LogedProvider } from './context/UserContext';
 
-
+//componente app que renderiza el drawer con el contexto del login
 const App: React.FC = () => {  
 
   return (
@@ -11,14 +11,4 @@ const App: React.FC = () => {
   </LogedProvider >
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
-
 export default App;

@@ -1,80 +1,33 @@
 import { Audio } from 'expo-av';
-import { SoundObject } from 'expo-av/build/Audio';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Button } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
+import Animated, { useSharedValue } from 'react-native-reanimated';
+import LogedContext from '../context/UserContext';
+
 
 const HomeScreen: React.FC = () => {
-  const [ recording, setRecording ] = useState<Audio.Recording | null>(null);
-  const [ recordings, setRecordings ] = useState<Audio.Recording[]>([])
-  const [ isRecording, setIsRecording ] = useState(false);
+  //se instancia el contexto con el login
+  const { loged, setLoged } = useContext(LogedContext);
 
-  useEffect(() => {
-    Audio.requestPermissionsAsync();
-  }, []);
-
-  const startRecording = async () => {
+  //funcion que setea el login a false para deslogearse y con el drawer
+  //navegar automaticamente al register o al login
+  const logout = async () => {
     try {
-      const recordingObject = new Audio.Recording();
-      await recordingObject.prepareToRecordAsync();
-      const status = await recordingObject.getStatusAsync()
-
-      if (status.canRecord) {
-        await recordingObject.startAsync();
-
-        setRecording(recordingObject);
-        setIsRecording(true);
-      } else {
-        console.error('El objeto de grabación no está preparado para grabar.');
-      }
+      setLoged(false)
     } catch (error) {
-      console.error('Error al comenzar la grabación:', error);
+      console.error('Error al borrar la grabación:', error)
     }
-  };
-
-  const stopRecording = async () => {
-    if (recording) {
-      try {
-        setRecordings([...recordings, recording])
-        await recording.stopAndUnloadAsync()
-        setIsRecording(false);
-        //setRecording(null);
-      } catch (error) {
-        console.error('Error al detener la grabación:', error)
-      }
-    }
-  };
-
-  const playRecording = async (audio: Audio.Recording) => {
-    try {
-      const { sound } = await audio.createNewLoadedSoundAsync()
-      await sound.playAsync()
-    } catch (error) {
-      console.error('Error al reproducir la grabación:', error)
-    }
-  };
-
-  const renderRecording = ({ item, index }: { item: Audio.Recording, index: number }) => (
-    <View>
-      <Text>Audio{index +1}:</Text>
-      <Button title="Reproducir" onPress={() => playRecording(item)} />
-    </View>
-  );
+  }
 
     return (
         <View style={styles.container}>
           <View style={styles.background}></View>
           <View style={styles.welcomeContainer}>
             <Text style={styles.title}>Bienvenido a la Aplicación</Text>
-            <Button
-              title={isRecording ? 'Detener Grabación' : 'Comenzar Grabación'}
-              onPress={isRecording ? stopRecording : startRecording}
-            />
-            <Text>tiene {recordings.length} audios grabados</Text>
           </View>
-          <FlatList data={recordings} renderItem={renderRecording}>
-            
-          </FlatList>
+          
+          <Button title="cerrar sesion" onPress={() => logout()} />
         </View>
       );
     };

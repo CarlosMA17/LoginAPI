@@ -14,10 +14,11 @@ const RegisterScreen: React.FC<RegisterProps> = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-
+// funcion con la logica para mandar el registro
   const handleRegister = async () => {
 
     try {
+      //fetch que prueba la conexion y manda las credenciales
         const response = await fetch('http://192.168.1.43:8888/users/register', {
           method: 'POST',
           headers: {
@@ -27,17 +28,18 @@ const RegisterScreen: React.FC<RegisterProps> = ({ navigation }) => {
           body: JSON.stringify({ name, email, password }),
         });
         
+        //segun la respuesta se retornan los datos y se logea o se muestra el error
         if (response.status == 201) {
           const responseData: UserRegisterResponse = await response.json();
           console.log(responseData)
           setLoged(true)
 
-          navigation.navigate('HomeScreen')
+          navigation.navigate('Home')
 
   
           return responseData
 
-
+          //manejo del error
         } else if (response.status == 400) {
           const errorResponse = await response.json();
           console.log(errorResponse)
@@ -76,7 +78,6 @@ const RegisterScreen: React.FC<RegisterProps> = ({ navigation }) => {
           placeholder="Ingresa tu contraseña"
           secureTextEntry
         />
-
         <Button title="Registrar" onPress={handleRegister} />
       </View>
   );
